@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
-import { useNuxtApp } from '#app';
-import {useToast} from 'vue-toast-notification';
+import { useToast } from 'vue-toast-notification';
 
 interface UserPayloadInterface {
     username: string;
@@ -22,7 +21,6 @@ export const useAuthStore = defineStore('auth', {
     actions: {
         async loginApi({ username, password }: UserPayloadInterface) {
             const BASE_URL = useRuntimeConfig().public.api_url;
-            // useFetch from nuxt 3
             const { data, pending }: any = await useFetch(`${BASE_URL}/auth/local`, {
                 method: 'post',
                 headers: { 'Content-Type': 'application/json' },
@@ -34,18 +32,16 @@ export const useAuthStore = defineStore('auth', {
             this.loading = pending;
             console.log("login res", data);
             if (data.value) {
-                const token = useCookie('token'); // useCookie new hook in nuxt 3
-                token.value = data?.value?.jwt; // set token to cookie
+                const token = useCookie('token');
+                token.value = data?.value?.jwt;
                 this.loginUser = data?.value?.user;
-                this.authenticated = true; // set authenticated  state value to true
+                this.authenticated = true;
             }
         },
 
         async registerApi({ username, email, password }: RegisterPayloadInterface) {
             const BASE_URL = useRuntimeConfig().public.api_url;
-            const nuxtApp = useNuxtApp();
             const $toast = useToast();
-            // useFetch from nuxt 3
             try {
                 const { data, pending, error }: any = await useFetch(`${BASE_URL}/auth/local/register`, {
                     method: 'post',
@@ -56,7 +52,6 @@ export const useAuthStore = defineStore('auth', {
                         password,
                     },
                 });
-                debugger
                 this.loading = pending;
                 console.log("RegisterPayloadInterface res", data);
                 if (data.value) {
@@ -66,7 +61,7 @@ export const useAuthStore = defineStore('auth', {
                     this.authenticated = true; // set authenticated  state value to true
                 } else if (error && error.value && error.value.data) {
                     console.log("error", error.value.data.error.message);
-                    $toast.error(error.value.data.error.message)
+                    $toast.error(error.value.data.error.message);
                 }
             } catch (e) {
                 console.log("e", e);

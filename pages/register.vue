@@ -53,6 +53,7 @@ const { authenticated } = storeToRefs(useAuthStore()); // make authenticated sta
 
 const router = useRouter();
 
+
 const register = async () => {
     await registerApi(user.value); // call authenticateUser and pass the user object
     // redirect to homepage if user is authenticated
